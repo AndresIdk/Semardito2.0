@@ -39,100 +39,89 @@ const archivoAsistencia = path.join(
   "asistencia.xlsx"
 );
 
-// Obtener dia actual
-const date = new Date()
-const opciones: Intl.DateTimeFormatOptions = { weekday: 'long' };
-const diaActual = new Intl.DateTimeFormat('es-ES', opciones).format(date);
-
 
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
 
-  if (diaActual === "Martes" || diaActual === "Jueves") {
-    bot.sendMessage(
-      chatId,
-      "Bienvenido al bot de Semard. Tenga en cuenta que su uso es exclusivo para el grupo de Semard. Si desea conocer los comandos disponibles, por favor, escriba /help"
-    );
-  } else {
-    bot.sendMessage(
-      chatId,
-      "Lo sentimos pero no es dia de asistencia 💀"
-    );
-  }
+
+  bot.sendMessage(
+    chatId,
+    "Bienvenido al bot de Semard. Tenga en cuenta que su uso es exclusivo para el grupo de Semard. Si desea conocer los comandos disponibles, por favor, escriba /help"
+  );
 
 });
 
-if (diaActual === "Martes" || diaActual === "Jueves") {
-  bot.onText(/\/money/, async (msg) => {
-    const chatId = msg.chat.id;
-    const inputContabilidad = {
-      cantidad: 0,
-      descripcion: "Por asignar (?)",
-      nombreUsuario: "Por asignar (?)",
-    };
 
-    const msgA = await bot.sendMessage(chatId, "Ingrese la cantidad monetaria:", {
-      reply_markup: {
-        force_reply: true,
-      },
-    });
+bot.onText(/\/money/, async (msg) => {
+  const chatId = msg.chat.id;
+  const inputContabilidad = {
+    cantidad: 0,
+    descripcion: "Por asignar (?)",
+    nombreUsuario: "Por asignar (?)",
+  };
 
-    // Promesa que se resolverá cuando el usuario responda al primer mensaje
-    const respuestaA = new Promise<void>((resolve) => {
-      bot.onReplyToMessage(chatId, msgA.message_id, async (msgA_1) => {
-        const cantidad = parseFloat(msgA_1.text!);
-        inputContabilidad.cantidad = cantidad;
-        resolve();
-      });
-    });
-
-    await respuestaA;
-
-    const msgB = await bot.sendMessage(chatId, "Razón del dinero:", {
-      reply_markup: {
-        force_reply: true,
-      },
-    });
-
-    // Promesa que se resolverá cuando el usuario responda al segundo mensaje
-    const respuestaB = new Promise<void>((resolve) => {
-      bot.onReplyToMessage(chatId, msgB.message_id, async (msgB_1) => {
-        const descripcion = msgB_1.text!;
-        inputContabilidad.descripcion = descripcion;
-        resolve();
-      });
-    });
-
-    await respuestaB;
-
-    const msgC = await bot.sendMessage(chatId, "Ingrese su nombre:", {
-      reply_markup: {
-        force_reply: true,
-      },
-    });
-
-    // Promesa que se resolverá cuando el usuario responda al tercer mensaje
-    const respuestaC = new Promise<void>((resolve) => {
-      bot.onReplyToMessage(chatId, msgC.message_id, async (msgC_1) => {
-        const nombreUsuario = msgC_1.text!;
-        inputContabilidad.nombreUsuario = nombreUsuario;
-        resolve();
-      });
-    });
-
-    await respuestaC;
-
-    const response = await toContabilidad(inputContabilidad, archivoContabilidad);
-
-    if (response) {
-      await bot.sendMessage(chatId, "Cada vez menos plata 💀 (Todo salió bien)");
-    } else {
-      await bot.sendMessage(chatId, "Que charada, algo salió mal...");
-    }
+  const msgA = await bot.sendMessage(chatId, "Ingrese la cantidad monetaria:", {
+    reply_markup: {
+      force_reply: true,
+    },
   });
 
-  require('./src/controllers/aistencia_control_bot')
-}
+  // Promesa que se resolverá cuando el usuario responda al primer mensaje
+  const respuestaA = new Promise<void>((resolve) => {
+    bot.onReplyToMessage(chatId, msgA.message_id, async (msgA_1) => {
+      const cantidad = parseFloat(msgA_1.text!);
+      inputContabilidad.cantidad = cantidad;
+      resolve();
+    });
+  });
+
+  await respuestaA;
+
+  const msgB = await bot.sendMessage(chatId, "Razón del dinero:", {
+    reply_markup: {
+      force_reply: true,
+    },
+  });
+
+  // Promesa que se resolverá cuando el usuario responda al segundo mensaje
+  const respuestaB = new Promise<void>((resolve) => {
+    bot.onReplyToMessage(chatId, msgB.message_id, async (msgB_1) => {
+      const descripcion = msgB_1.text!;
+      inputContabilidad.descripcion = descripcion;
+      resolve();
+    });
+  });
+
+  await respuestaB;
+
+  const msgC = await bot.sendMessage(chatId, "Ingrese su nombre:", {
+    reply_markup: {
+      force_reply: true,
+    },
+  });
+
+  // Promesa que se resolverá cuando el usuario responda al tercer mensaje
+  const respuestaC = new Promise<void>((resolve) => {
+    bot.onReplyToMessage(chatId, msgC.message_id, async (msgC_1) => {
+      const nombreUsuario = msgC_1.text!;
+      inputContabilidad.nombreUsuario = nombreUsuario;
+      resolve();
+    });
+  });
+
+  await respuestaC;
+
+  const response = await toContabilidad(inputContabilidad, archivoContabilidad);
+
+  if (response) {
+    await bot.sendMessage(chatId, "Cada vez menos plata 💀 (Todo salió bien)");
+  } else {
+    await bot.sendMessage(chatId, "Que charada, algo salió mal...");
+  }
+});
+
+require('./src/controllers/aistencia_control_bot')
+
 
 // bot.onText(/\/asistencia/, async (msg) => {
 //   const chatId = msg.chat.id;
