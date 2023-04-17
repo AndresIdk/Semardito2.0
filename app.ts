@@ -5,9 +5,9 @@ import logger from "morgan";
 import createError from "http-errors";
 import toContabilidad from "./src/routes/contabilidad";
 import toAsistencia from "./src/routes/asistencia";
-import * as dotenv from "dotenv";
+// import * as dotenv from "dotenv";
 import bot from "./src/utils/bot";
-dotenv.config();
+// dotenv.config();
 
 const app = express();
 
@@ -27,22 +27,20 @@ app.use(function (req, res, next) {
 });
 
 // Ubicación del archivo de hoja de cálculo
-const archivoContabilidad = path.join(
-  process.cwd(),
-  "documents",
-  "contabilidad.xlsx"
-);
+// const archivoContabilidad = path.join(
+//   process.cwd(),
+//   "documents",
+//   "contabilidad.xlsx"
+// );
 
-const archivoAsistencia = path.join(
-  process.cwd(),
-  "documents",
-  "asistencia.xlsx"
-);
-
+// const archivoAsistencia = path.join(
+//   process.cwd(),
+//   "documents",
+//   "asistencia.xlsx"
+// );
 
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
-
 
   bot.sendMessage(
     chatId,
@@ -51,123 +49,11 @@ bot.onText(/\/start/, async (msg) => {
 
 });
 
+// Controlador de contabilidad
+require('./src/controllers/contabilidad_control_bot')
+// Controlador de asistencia
+require('./src/controllers/asistencia_control_bot')
 
-bot.onText(/\/money/, async (msg) => {
-  const chatId = msg.chat.id;
-  const inputContabilidad = {
-    cantidad: 0,
-    descripcion: "Por asignar (?)",
-    nombreUsuario: "Por asignar (?)",
-  };
-
-  const msgA = await bot.sendMessage(chatId, "Ingrese la cantidad monetaria:", {
-    reply_markup: {
-      force_reply: true,
-    },
-  });
-
-  // Promesa que se resolverá cuando el usuario responda al primer mensaje
-  const respuestaA = new Promise<void>((resolve) => {
-    bot.onReplyToMessage(chatId, msgA.message_id, async (msgA_1) => {
-      const cantidad = parseFloat(msgA_1.text!);
-      inputContabilidad.cantidad = cantidad;
-      resolve();
-    });
-  });
-
-  await respuestaA;
-
-  const msgB = await bot.sendMessage(chatId, "Razón del dinero:", {
-    reply_markup: {
-      force_reply: true,
-    },
-  });
-
-  // Promesa que se resolverá cuando el usuario responda al segundo mensaje
-  const respuestaB = new Promise<void>((resolve) => {
-    bot.onReplyToMessage(chatId, msgB.message_id, async (msgB_1) => {
-      const descripcion = msgB_1.text!;
-      inputContabilidad.descripcion = descripcion;
-      resolve();
-    });
-  });
-
-  await respuestaB;
-
-  const msgC = await bot.sendMessage(chatId, "Ingrese su nombre:", {
-    reply_markup: {
-      force_reply: true,
-    },
-  });
-
-  // Promesa que se resolverá cuando el usuario responda al tercer mensaje
-  const respuestaC = new Promise<void>((resolve) => {
-    bot.onReplyToMessage(chatId, msgC.message_id, async (msgC_1) => {
-      const nombreUsuario = msgC_1.text!;
-      inputContabilidad.nombreUsuario = nombreUsuario;
-      resolve();
-    });
-  });
-
-  await respuestaC;
-
-  const response = await toContabilidad(inputContabilidad, archivoContabilidad);
-
-  if (response) {
-    await bot.sendMessage(chatId, "Cada vez menos plata 💀 (Todo salió bien)");
-  } else {
-    await bot.sendMessage(chatId, "Que charada, algo salió mal...");
-  }
-});
-
-require('./src/controllers/aistencia_control_bot')
-
-
-// bot.onText(/\/asistencia/, async (msg) => {
-//   const chatId = msg.chat.id;
-//   let nombres: string;
-//   const msg1 = await bot.sendMessage(
-//     chatId,
-//     "Ingrese los nombres seguido de una coma (Juanito, Pepito,...):",
-//     {
-//       reply_markup: {
-//         force_reply: true,
-//       },
-//     }
-//   );
-
-//   // Promesa que se resolverá cuando el usuario responda al primer mensaje
-//   const respuesta1 = new Promise<void>((resolve) => {
-//     bot.onReplyToMessage(chatId, msg1.message_id, async (msg1_1) => {
-//       nombres = msg1_1.text!;
-//       resolve();
-//     });
-//   });
-
-//   await respuesta1;
-
-//   //how to get a date with format dd/mm/yyyy in javascript
-//   const date = new Date();
-//   const day = date.getDate();
-//   const month = date.getMonth() + 1;
-//   const year = date.getFullYear();
-//   const fecha = `${day}/${month}/${year}`;
-
-//   // Split the string on comma separation and put the items in an array
-//   const listNombres: string[] = nombres!.replace(" ", "").split(",");
-
-//   const response = await toAsistencia({
-//     date: fecha,
-//     names: listNombres,
-//     filePath: archivoAsistencia,
-//   });
-
-//   if (response) {
-//     await bot.sendMessage(chatId, "Si señor, pura gente responsable 👍");
-//   } else {
-//     await bot.sendMessage(chatId, "Ya nos hackearon, algo salió mal...");
-//   }
-// });
 
 app.listen(3000, () => {
   console.log("Server started on port 3000");

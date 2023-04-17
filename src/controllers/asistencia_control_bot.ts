@@ -1,4 +1,3 @@
-import TelegramBot from "node-telegram-bot-api";
 import { EscribirSheet } from "./asistencia_control_sheet";
 import bot from "../utils/bot";
 
