@@ -1,4 +1,4 @@
-import { AccederSheet, EscribirSheet } from "../controllers/asistencia_control";
+import { AccederSheet, EscribirSheet } from "../controllers/asistencia_control_sheet";
 
 // Importar interface ASISTENCIA
 import { Asistencia } from "../interfaces/interfaces_asistencia";
