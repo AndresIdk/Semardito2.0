@@ -4,8 +4,8 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import createError from "http-errors";
 import TelegramBot from "node-telegram-bot-api";
-import toContabilidad from "./routes/contabilidad";
-import toAsistencia from "./routes/asistencia";
+import toContabilidad from "./src/routes/contabilidad";
+import toAsistencia from "./src/routes/asistencia";
 import * as dotenv from "dotenv";
 dotenv.config();
 
