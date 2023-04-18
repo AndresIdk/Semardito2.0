@@ -9,7 +9,7 @@ const diaActual = new Intl.DateTimeFormat('es-ES', opciones).format(date);
 console.log('Funcionando')
 bot.onText(/\/asistencia/, async (msg) => {
     const chatId = msg.chat.id;
-    if (diaActual === "Martes" || diaActual === "Jueves") {
+    if (diaActual === "Martes" || diaActual === "Viernes") {
         const chatId = msg.chat.id;
         const InputAsistencia = {
             Nombre: "",
